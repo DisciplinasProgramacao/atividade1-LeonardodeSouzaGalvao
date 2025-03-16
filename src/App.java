@@ -100,6 +100,7 @@ public class App {
             operacoes += 2;
             return codigo4(n - 1) + codigo4(n - 2);
         }
+        //se colocar operações++ fora do if e tirar a do else, ele funciona...
     }
 
     /**
@@ -127,6 +128,9 @@ public class App {
         return String.format("Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms", vetor.length, operacoes, duracao);
     }
     public static void main(String[] args) {
+        /*
+        Teste 4 da sala de aula
+
         int[] tamanhosTeste = tamanhosTestePequeno;
         for(int i =0; i< tamanhosTeste.length; i++){
             long inicio = System.nanoTime();
@@ -137,5 +141,69 @@ public class App {
 
             //Consolidar dados em planilha!!!!
         }
+         */
+
+          // Testando código 1 e código 2 com tamanhos grandes
+    for (int tamanho : tamanhosTesteGrande) {
+        
+            int[] vetor = gerarVetor(tamanho);
+
+            // Código 1
+            long inicio = System.nanoTime();
+            int resultado1 = codigo1(vetor);
+            duracao = (System.nanoTime() - inicio) * nanoToMilli;
+            System.out.printf("Codigo 1  Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms\n",
+                              tamanho, operacoes, duracao);
+        
+        
+    }
+    System.out.println("------------------------------------------------------");
+
+    for (int tamanho : tamanhosTesteGrande) {
+        
+        int[] vetor = gerarVetor(tamanho);
+
+
+
+        // Código 2
+        Long inicio = System.nanoTime();
+        int resultado2 = codigo2(vetor);
+        duracao = (System.nanoTime() - inicio) * nanoToMilli;
+        System.out.printf("Codigo 2  Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms\n",
+                          tamanho, operacoes, duracao);
+    
+   
+}
+System.out.println("------------------------------------------------------");
+
+    // Testando código 3 com tamanhos médios
+    for (int tamanho : tamanhosTesteMedio) {
+        
+            int[] vetor = gerarVetor(tamanho);
+
+            long inicio = System.nanoTime();
+            codigo3(vetor);
+            duracao = (System.nanoTime() - inicio) * nanoToMilli;
+            System.out.printf("Codigo 3  Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms\n",
+                              tamanho, operacoes, duracao);
+        
+       
+    }
+    System.out.println("------------------------------------------------------");
+
+    // Testando código 4 com tamanhos pequenos
+    
+        
+        int[] tamanhosTeste = tamanhosTestePequeno;
+        for(int i =0; i< tamanhosTeste.length; i++){
+            long inicio = System.nanoTime();
+            codigo4(tamanhosTeste[i]);
+            duracao = (System.nanoTime()-inicio)*nanoToMilli;
+            System.out.printf("Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms \n", tamanhosTeste[i], operacoes, duracao);
+        }
+        
+    
+    System.out.println("------------------------------------------------------");
+          
     }
 }
