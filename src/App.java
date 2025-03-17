@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.function.Consumer;
 
 /** 
  * MIT License
@@ -40,10 +41,10 @@ public class App {
      * @return Uma resposta que significa....
      */
     static int codigo1(int[] vetor) {
-        operacoes=0;
         int resposta = 0;
+        operacoes = 0;
         for (int i = 0; i < vetor.length; i += 2) {
-            operacoes +=4;
+            operacoes += 4;
             resposta += vetor[i]%2;
         }
         return resposta;
@@ -117,14 +118,14 @@ public class App {
         
     }
 
-    public static void marcarTempo(int[] vetor){
+    public static void marcarTempo(int[] vetor, Consumer funcao){
         long inicio = System.nanoTime();
-        codigo3(vetor);
+        funcao.accept(vetor);
         duracao = (System.nanoTime()-inicio)* nanoToMilli;
     }
 
-    public static String executarTeste(int[] vetor){
-        marcarTempo(vetor);
+    public static String executarTeste(int[] vetor, Consumer funcao){
+        marcarTempo(vetor, funcao);
         return String.format("Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms", vetor.length, operacoes, duracao);
     }
     public static void main(String[] args) {
@@ -143,67 +144,17 @@ public class App {
         }
          */
 
-          // Testando código 1 e código 2 com tamanhos grandes
-    for (int tamanho : tamanhosTesteGrande) {
-        
-            int[] vetor = gerarVetor(tamanho);
-
-            // Código 1
-            long inicio = System.nanoTime();
-            int resultado1 = codigo1(vetor);
-            duracao = (System.nanoTime() - inicio) * nanoToMilli;
-            System.out.printf("Codigo 1  Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms\n",
-                              tamanho, operacoes, duracao);
-        
-        
-    }
-    System.out.println("------------------------------------------------------");
-
-    for (int tamanho : tamanhosTesteGrande) {
-        
-        int[] vetor = gerarVetor(tamanho);
-
-
-
-        // Código 2
-        Long inicio = System.nanoTime();
-        int resultado2 = codigo2(vetor);
-        duracao = (System.nanoTime() - inicio) * nanoToMilli;
-        System.out.printf("Codigo 2  Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms\n",
-                          tamanho, operacoes, duracao);
-    
-   
-}
-System.out.println("------------------------------------------------------");
-
-    // Testando código 3 com tamanhos médios
-    for (int tamanho : tamanhosTesteMedio) {
-        
-            int[] vetor = gerarVetor(tamanho);
-
-            long inicio = System.nanoTime();
-            codigo3(vetor);
-            duracao = (System.nanoTime() - inicio) * nanoToMilli;
-            System.out.printf("Codigo 3  Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms\n",
-                              tamanho, operacoes, duracao);
-        
-       
-    }
-    System.out.println("------------------------------------------------------");
-
-    // Testando código 4 com tamanhos pequenos
-    
-        
-        int[] tamanhosTeste = tamanhosTestePequeno;
+         int[] tamanhosTeste = tamanhosTestePequeno;
+         Consumer<int[]> funcao = App::codigo1;
         for(int i =0; i< tamanhosTeste.length; i++){
-            long inicio = System.nanoTime();
-            codigo4(tamanhosTeste[i]);
-            duracao = (System.nanoTime()-inicio)*nanoToMilli;
-            System.out.printf("Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms \n", tamanhosTeste[i], operacoes, duracao);
-        }
+            int[] vetor = gerarVetor(tamanhosTeste[i]);
+            executarTeste(vetor, funcao);
+            funcao = App::codigo2;
+            executarTeste(vetor, funcao);
+
         
-    
-    System.out.println("------------------------------------------------------");
-          
+        }
+
+         
     }
 }
