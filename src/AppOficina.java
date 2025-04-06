@@ -148,8 +148,8 @@ public class AppOficina {
         Produto localizado = null;
         
         for (int i = 0; i < quantProdutos && localizado == null; i++) {
-            if (produtos[i].hashCode() == numero)
-                localizado = produtos[i];
+            if (produtosIdentific[i].hashCode()-10000 == numero)
+                localizado = produtosIdentific[i];
         }
         return localizado;
     }
