@@ -1,7 +1,14 @@
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -80,6 +87,7 @@ public class AppOficina {
         System.out.println("3 - Ordenar produtos");
         System.out.println("4 - Embaralhar produtos");
         System.out.println("5 - Listar produtos");
+        System.out.println("6 - Item mais barato pelo arquivo");
         System.out.println("0 - Finalizar");
        
         return lerNumero("Digite sua opção", Integer.class);
@@ -209,11 +217,68 @@ public class AppOficina {
             System.out.println(produtos[i]);
         }
     }
+    static void copyFile(String source, String dest) {
+            try {
+                Files.copy(new File(source).toPath(), new File(dest).toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            } catch (IOException e) {
+                System.err.println("Error copying file: " + e.getMessage());
+            }
+        }
+
+    static void salvarProdutosEmArquivo(String nomeArquivo, Produto[] produtosOrdenados) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(nomeArquivo))) {
+        writer.write(String.valueOf(produtosOrdenados.length));
+        writer.newLine();
+
+        for (Produto produto : produtosOrdenados) {
+            writer.write(produto.toString());
+            writer.newLine();
+        }
+
+        
+    } catch (IOException e) {
+        System.err.println("Erro ao salvar o arquivo: " + e.getMessage());
+    }
+}
+
+static void createCopys(){
+    ordenador = new Mergesort<>();
+    
+    // Ordena por valor
+    Comparator<Produto> comp = new ComparadorPorValor();
+    Produto[] ordenadosPorPreco = ordenador.ordenar(Arrays.copyOf(produtos, quantProdutos), comp); 
+    salvarProdutosEmArquivo("produtos_ordenados_preco.txt", ordenadosPorPreco);
+    
+    // Ordena por padrão (ex: nome ou ID)
+    comp = Produto::compareTo;
+    Produto[] ordenadosPorPadrao = ordenador.ordenar(Arrays.copyOf(produtos, quantProdutos), comp); 
+    salvarProdutosEmArquivo("produtos_ordenados_Desc.txt", ordenadosPorPadrao);
+}
+
+private static Object lerMaisBaratoArquivo() {
+    try(BufferedReader reader = new BufferedReader(new FileReader("produtos_ordenados_preco.txt"))){
+        String line;
+        reader.readLine();
+        line = reader.readLine();
+        System.out.println(line);
+        
+    }catch(FileNotFoundException e){
+        System.out.println("Arquivo não encontrado");
+    }
+    catch(IOException e){
+        System.out.println("Erro ao ler o arquivo: "+e.getMessage());
+    }
+    return null;
+}                        
+
+    
 
     public static void main(String[] args) {
         teclado = new Scanner(System.in);
-        
         produtos = carregarProdutos(nomeArquivoDados);
+        createCopys();
+        
         embaralharProdutos();
 
         int opcao = -1;
@@ -226,10 +291,12 @@ public class AppOficina {
                 case 3 -> ordenarProdutos();
                 case 4 -> embaralharProdutos();
                 case 5 -> listarProdutos();
+                case 6 -> lerMaisBaratoArquivo();
                 case 0 -> System.out.println("FLW VLW OBG VLT SMP.");
             }
             pausa();
         }while (opcao != 0);
         teclado.close();
-    }                        
+    }
+
 }
