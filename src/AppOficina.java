@@ -43,6 +43,8 @@ public class AppOficina {
 
     static final int MAX_PEDIDOS = 100;
     static Produto[] produtos;
+    static Produto[] produtosIdentific;
+    static Produto[] produtosDesc;
     static int quantProdutos = 0;
     static String nomeArquivoDados = "produtos.txt";
     static IOrdenador<Produto> ordenador;
@@ -87,7 +89,7 @@ public class AppOficina {
         System.out.println("3 - Ordenar produtos");
         System.out.println("4 - Embaralhar produtos");
         System.out.println("5 - Listar produtos");
-        System.out.println("6 - Item mais barato pelo arquivo");
+        System.out.println("6 - Listar produtos pela sua descrição");
         System.out.println("0 - Finalizar");
        
         return lerNumero("Digite sua opção", Integer.class);
@@ -107,7 +109,8 @@ public class AppOficina {
     static int exibitMenuCriterioOrdenacao() {
         cabecalho();
         System.out.println("1 - Padrão");
-        System.out.println("2 - Ordenar por valor");     
+        System.out.println("2 - Ordenar por valor");  
+        System.out.println("3 - Ordenar por identificador");   
         System.out.println("0 - Finalizar");
        
         return lerNumero("Digite sua opção", Integer.class);
@@ -190,6 +193,7 @@ public class AppOficina {
         switch (ordenacao) {
             case 1 -> comp = Produto :: compareTo;
             case 2 -> comp = new ComparadorPorValor();
+            case 3 -> comp = new ComparadorPorIdentificador();
         }
 
         if(ordenador!=null){
@@ -244,35 +248,36 @@ public class AppOficina {
 
 static void createCopys(){
     ordenador = new Mergesort<>();
-    
-    // Ordena por valor
-    Comparator<Produto> comp = new ComparadorPorValor();
-    Produto[] ordenadosPorPreco = ordenador.ordenar(Arrays.copyOf(produtos, quantProdutos), comp); 
-    salvarProdutosEmArquivo("produtos_ordenados_preco.txt", ordenadosPorPreco);
-    
+
+    produtosIdentific = new Produto[quantProdutos];
+    produtosDesc = new Produto[quantProdutos];
+
+    // Ordena por Identificador
+    Comparator<Produto> comp = new ComparadorPorIdentificador();
+    Produto[] ordenadosPorIdentficc = ordenador.ordenar(Arrays.copyOf(produtos, quantProdutos), comp); 
+    salvarProdutosEmArquivo("produtos_ordenados_Ident.txt", ordenadosPorIdentficc);
+    produtosIdentific = Arrays.copyOf(ordenadosPorIdentficc, quantProdutos);
+
     // Ordena por padrão (ex: nome ou ID)
     comp = Produto::compareTo;
     Produto[] ordenadosPorPadrao = ordenador.ordenar(Arrays.copyOf(produtos, quantProdutos), comp); 
     salvarProdutosEmArquivo("produtos_ordenados_Desc.txt", ordenadosPorPadrao);
+    produtosDesc = Arrays.copyOf(ordenadosPorPadrao, quantProdutos);
 }
+                      
 
-private static Object lerMaisBaratoArquivo() {
-    try(BufferedReader reader = new BufferedReader(new FileReader("produtos_ordenados_preco.txt"))){
-        String line;
-        reader.readLine();
-        line = reader.readLine();
-        System.out.println(line);
-        
-    }catch(FileNotFoundException e){
-        System.out.println("Arquivo não encontrado");
+    private static void listarProdutosDesc() {
+        cabecalho();
+        for (int i = 0; i < quantProdutos; i++) {
+            System.out.println(produtosDesc[i]);
+        };
     }
-    catch(IOException e){
-        System.out.println("Erro ao ler o arquivo: "+e.getMessage());
+    private static void listarProdutosIdentific() {
+        cabecalho();
+        for (int i = 0; i < quantProdutos; i++) {
+            System.out.println(produtosIdentific[i]);
+        };
     }
-    return null;
-}                        
-
-    
 
     public static void main(String[] args) {
         teclado = new Scanner(System.in);
@@ -291,12 +296,13 @@ private static Object lerMaisBaratoArquivo() {
                 case 3 -> ordenarProdutos();
                 case 4 -> embaralharProdutos();
                 case 5 -> listarProdutos();
-                case 6 -> lerMaisBaratoArquivo();
+                case 6 -> listarProdutosIdentific();
                 case 0 -> System.out.println("FLW VLW OBG VLT SMP.");
             }
             pausa();
         }while (opcao != 0);
         teclado.close();
     }
+
 
 }
