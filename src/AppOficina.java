@@ -106,7 +106,8 @@ public class AppOficina {
         System.out.println("4 - Embaralhar produtos");
         System.out.println("5 - Listar produtos");
         System.out.println("6 - Listar produtos pela sua descrição");
-        System.out.println("7 - Procurar produto pela sua descrição");
+        System.out.println("7 - Listar produtos pelo seu identificador");
+        System.out.println("8 - Procurar produto pela sua descrição");
         System.out.println("0 - Finalizar");
        
         return lerNumero("Digite sua opção", Integer.class);
@@ -303,12 +304,12 @@ static void createCopys(){
             System.out.println(produtosDesc[i]);
         };
     }
-    /*private static void listarProdutosIdentific() {
+    private static void listarProdutosIdentific() {
         cabecalho();
         for (int i = 0; i < quantProdutos; i++) {
             System.out.println(produtosIdentific[i]);
         };
-    }*/
+    }
 
     public static void main(String[] args) {
         teclado = new Scanner(System.in);
@@ -328,7 +329,8 @@ static void createCopys(){
                 case 4 -> embaralharProdutos();
                 case 5 -> listarProdutos();
                 case 6 -> listarProdutosDesc();
-                case 7 -> mostrarProduto(localizarProdutoDesc());
+                case 7 -> listarProdutosIdentific();
+                case 8 -> mostrarProduto(localizarProdutoDesc());
                 case 0 -> System.out.println("FLW VLW OBG VLT SMP.");
             }
             pausa();
