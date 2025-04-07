@@ -8,6 +8,10 @@ public class ComparadorPorValor implements Comparator<Produto> {
         if(o1.valorDeVenda() != o2.valorDeVenda())
         resposta = (o1.valorDeVenda() > o2.valorDeVenda()? 1: -1);
 
+        if(o1.valorDeVenda() == o2.valorDeVenda()){
+           resposta =  o1.compareTo(o2);
+        }
+
         return resposta;
     }
     

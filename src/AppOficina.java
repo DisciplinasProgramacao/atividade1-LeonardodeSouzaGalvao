@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -54,6 +55,7 @@ public class AppOficina {
 
     
 
+    
     static <T extends Number> T lerNumero(String mensagem, Class<T> classe) {
         System.out.print(mensagem + ": ");
         T valor;
@@ -65,6 +67,20 @@ public class AppOficina {
         }
         return valor;
     }
+
+    static <T> T lerDesc(String mensagem, Class<T> classe) {
+        System.out.print(mensagem + ": ");
+        T valor;
+        try {
+            valor = classe.getConstructor(String.class).newInstance(teclado.nextLine());
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            return null;
+        }
+        return valor;
+    }
+
+    
 
     static void limparTela() {
         System.out.print("\033[H\033[2J");
@@ -90,6 +106,7 @@ public class AppOficina {
         System.out.println("4 - Embaralhar produtos");
         System.out.println("5 - Listar produtos");
         System.out.println("6 - Listar produtos pela sua descrição");
+        System.out.println("7 - Procurar produto pela sua descrição");
         System.out.println("0 - Finalizar");
        
         return lerNumero("Digite sua opção", Integer.class);
@@ -153,6 +170,20 @@ public class AppOficina {
         }
         return localizado;
     }
+
+    static Produto localizarProdutoDesc() {
+        cabecalho();
+        System.out.println("Localizando um produto");
+        String nome = lerDesc("Digite a descrição do prioduto", String.class);
+        Produto localizado = null;
+        
+        for (int i = 0; i < quantProdutos && localizado == null; i++) {
+            if (produtosDesc[i].descricao.toString() == nome.toString())
+                localizado = produtosDesc[i];
+        }
+        return localizado;
+    }
+
 
     private static void mostrarProduto(Produto produto) {
         cabecalho();
@@ -272,12 +303,12 @@ static void createCopys(){
             System.out.println(produtosDesc[i]);
         };
     }
-    private static void listarProdutosIdentific() {
+    /*private static void listarProdutosIdentific() {
         cabecalho();
         for (int i = 0; i < quantProdutos; i++) {
             System.out.println(produtosIdentific[i]);
         };
-    }
+    }*/
 
     public static void main(String[] args) {
         teclado = new Scanner(System.in);
@@ -296,7 +327,8 @@ static void createCopys(){
                 case 3 -> ordenarProdutos();
                 case 4 -> embaralharProdutos();
                 case 5 -> listarProdutos();
-                case 6 -> listarProdutosIdentific();
+                case 6 -> listarProdutosDesc();
+                case 7 -> mostrarProduto(localizarProdutoDesc());
                 case 0 -> System.out.println("FLW VLW OBG VLT SMP.");
             }
             pausa();
